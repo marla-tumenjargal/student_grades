@@ -1,85 +1,66 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- * StudentScoreApp handles the file input/output operations for the student score processing application.
- * It prompts for input/output filenames, reads the input file, and writes results to the output file.
- *
- * @author Claude
- * @version 1.0
- * @since 2025-05-07
+ * Handles all input and output
+ * Prompts the user for filenames
+ * Creates a Scanner or reads all lines form the input file
  */
 public class StudentScoreApp {
-
-    /**
-     * The main method that runs the application.
-     *
-     * @param args Command line arguments (not used)
-     */
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        List<String> lines = null;
+        Scanner userInput = new Scanner(System.in);
+        boolean fileProcessed = false;
 
-        // Get valid input file
-        while (lines == null) {
-            System.out.println("Enter input file name:");
-            String inputFileName = scanner.nextLine();
+        while (!fileProcessed) {
+            System.out.print("Enter input file name: ");
+            String inputFileName = userInput.nextLine();
 
             if (inputFileName.equalsIgnoreCase("quit")) {
-                System.out.println("Program terminated.");
-                scanner.close();
+                System.out.println("Exiting program.");
+                userInput.close();
                 return;
             }
 
             try {
-                System.out.println("Reading lines...");
-                Path path = Paths.get(inputFileName);
-                lines = Files.readAllLines(path);
-            } catch (FileNotFoundException e) {
-                System.out.println("[Error] File not found. Try again or type 'quit' to exit...");
-            } catch (Exception e) {
-                System.out.println("[Error] " + e.getMessage() + ". Try again or type 'quit' to exit...");
-            }
-        }
+                File inputFile = new File(inputFileName);
+                if (!inputFile.exists()) {
+                    throw new FileNotFoundException("File not found: " + inputFileName);
+                }
 
-        // Parse the lines
-        List<StudentRecord> records = null;
-        try {
-            records = StudentScoreReader.parseRecords(lines);
-        } catch (BadDataException e) {
-            System.out.println("[Error] Bad data: " + e.getMessage());
-        }
+                List<String> lines = Files.readAllLines(Paths.get(inputFileName));
 
-        // Write results to output file if parsing was successful
-        if (records != null) {
-            boolean outputSuccess = false;
-
-            while (!outputSuccess) {
-                System.out.println("Enter output file name to store results:");
-                String outputFileName = scanner.nextLine();
-
-                try (PrintWriter writer = new PrintWriter(new File(outputFileName))) {
-                    for (StudentRecord record : records) {
-                        if (record.hasError()) {
-                            writer.println(record.getName() + " : [No scores or partial due to error]");
+                List<StudentRecord> students;
+                try {
+                    students = StudentScoreReader.parseRecords(lines);
+                    System.out.println("\nStudent Results:");
+                    for (StudentRecord student : students) {
+                        if (student.hasError()) {
+                            System.out.println(student.getName() + " -- [No scores or partial due to error]");
                         } else {
-                            writer.println(record.getName() + " : " + record.getAverage());
+                            System.out.println(student.getName() + " : " + student.getAverage());
                         }
                     }
-                    System.out.println("Done writing averages to " + outputFileName);
-                    outputSuccess = true;
-                } catch (FileNotFoundException e) {
-                    System.out.println("[Error] Cannot write to " + outputFileName + ". Try again.");
+
+                    fileProcessed = true;
+                } catch (BadDataException e) {
+                    System.out.println("[Error] Bad data: " + e.getMessage());
+                    System.out.print("Would you like to try a different file? (y/n): ");
+                    String response = userInput.nextLine();
+                    if (!response.equalsIgnoreCase("y")) {
+                        fileProcessed = true;
+                    }
                 }
+            } catch (FileNotFoundException | NoSuchFileException e) {
+                System.out.println("[Error] File not found. Try again or type 'quit' to exit...");
+            } catch (Exception e) {
+                System.out.println("[Error] An error occurred: " + e.getMessage() + ". Try again or type 'quit' to exit...");
             }
         }
-
-        scanner.close();
+        userInput.close();
     }
 }

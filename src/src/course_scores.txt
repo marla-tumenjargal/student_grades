@@ -1,98 +1,16 @@
-15
+3
 Alice Johnson
 4
-85.5
-90.0
 92.5
-88.5
-Bob Smith
-3
-75.0
-82.5
-78.0
-Charlie Williams
-5
-98.5
-87.0
-91.5
-94.0
-89.5
-Dana Martinez
-0
+88
+87
+89
 X Æ 12
 3
-95.0
-not_a_score
-85.0
+95
+not-a-score
+85
 Marcus Aurelius
 2
-82.0
-86.0
-Emily Rodriguez
-7
-91.5
-88.0
-94.5
-92.0
-87.5
-90.0
-93.5
-Francis Thompson
-1
-77.0
-Grace Lee
-6
-84.5
-91.0
-88.5
-93.0
-86.5
-90.0
-Henry Wilson
-4
-67.5
-72.0
-81.5
-75.0
-Isabella Garcia
-2
-98.0
-99.5
-James Jackson
-10
-88.0
-92.5
-85.0
-91.0
-87.5
-93.0
-89.5
-94.0
-86.5
-90.0
-Katherine Chen
-5
-76.5
-81.0
-79.5
-84.0
-77.5
-Leonardo Da Vinci
-3
-100.0
-98.5
-99.0
-Marie Curie
-8
-95.5
-97.0
-96.5
-98.0
-94.5
-99.0
-97.5
-96.0
-Neil Armstrong
-2
-92.5
-invalid_score
+84
+84

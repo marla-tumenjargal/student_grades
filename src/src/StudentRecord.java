@@ -1,13 +1,7 @@
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * StudentRecord holds information about a student and their scores.
- * It provides methods to get the student's name and calculate their average score.
- *
- * @author Claude
- * @version 1.0
- * @since 2025-05-07
+ * StudentRecord class stores a new student and their scores
  */
 public class StudentRecord {
     private String name;
@@ -15,47 +9,36 @@ public class StudentRecord {
     private boolean hasError;
 
     /**
-     * Constructor with name and scores.
+     * Creates a new StudentRecord with a specified error status.
      *
      * @param name The student's name
-     * @param scores The student's scores
+     * @param scores A list of the student's scores
+     * @param hasError Whether the student record has an error
      */
-    public StudentRecord(String name, List<Double> scores) {
+    public StudentRecord(String name, List<Double> scores, boolean hasError) {
         this.name = name;
-        this.scores = scores != null ? scores : new ArrayList<>();
-        this.hasError = false;
+        this.scores = scores;
+        this.hasError = hasError;
     }
 
     /**
-     * Constructor with only name, initializes an empty scores list.
-     *
-     * @param name The student's name
-     */
-    public StudentRecord(String name) {
-        this(name, new ArrayList<>());
-    }
-
-    /**
-     * Gets the student's name.
-     *
-     * @return The student's name
+     * getter, gets name
+     * @return
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Gets the average score of the student.
-     * Returns 0 if there are no scores.
-     *
-     * @return The average score or 0 if no scores
+     * Calculates and returns the average of all scores.
+     * @return The average score, or 0.0 if no scores exist
      */
     public double getAverage() {
-        if (scores.isEmpty()) {
-            return 0;
+        if (scores == null || scores.isEmpty()) {
+            return 0.0;
         }
 
-        double sum = 0;
+        double sum = 0.0;
         for (Double score : scores) {
             sum += score;
         }
@@ -64,20 +47,10 @@ public class StudentRecord {
     }
 
     /**
-     * Checks if the record has an error.
-     *
-     * @return true if the record has an error, false otherwise
+     * checks if this student record has an error
+     * @return
      */
     public boolean hasError() {
         return hasError;
-    }
-
-    /**
-     * Sets the error status of the record.
-     *
-     * @param hasError The error status to set
-     */
-    public void setError(boolean hasError) {
-        this.hasError = hasError;
     }
 }
