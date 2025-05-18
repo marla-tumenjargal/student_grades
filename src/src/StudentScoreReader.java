@@ -21,54 +21,60 @@ public class StudentScoreReader {
 
         int currentLine = 0;
         try {
-            int numStudents = Integer.parseInt(lines.get(currentLine));
-            currentLine++;
+            int numStudents;
+            try {
+                numStudents = Integer.parseInt(lines.get(currentLine));
+                currentLine++;
+            } catch (NumberFormatException e) {
+                throw new BadDataException("First line is not an integer");
+            }
+
             for (int i = 0; i < numStudents; i++) {
                 if (currentLine >= lines.size()) {
                     throw new BadDataException("Unexpected end of file");
                 }
+
                 String studentName = lines.get(currentLine);
                 currentLine++;
 
                 if (currentLine >= lines.size()) {
                     throw new BadDataException("Missing score count for student: " + studentName);
                 }
+
                 int numScores;
-                boolean studentHasError = false;
+                boolean hasError = false;
+                List<Double> scores = new ArrayList<>();
 
                 try {
                     numScores = Integer.parseInt(lines.get(currentLine));
                     currentLine++;
+
+                    for (int j = 0; j < numScores; j++) {
+                        if (currentLine >= lines.size()) {
+                            hasError = true;
+                            break;
+                        }
+
+                        try {
+                            double score = Double.parseDouble(lines.get(currentLine));
+                            scores.add(score);
+                        } catch (NumberFormatException e) {
+                            hasError = true;
+                        }
+                        currentLine++;
+                    }
                 } catch (NumberFormatException e) {
-                    currentLine++;
-                    students.add(new StudentRecord(studentName, new ArrayList<>(), true));
-                    continue;
-                }
-
-                List<Double> scores = new ArrayList<>();
-
-                for (int j = 0; j < numScores; j++) {
-                    if (currentLine >= lines.size()) {
-                        studentHasError = true;
-                        break;
-                    }
-
-                    try {
-                        double score = Double.parseDouble(lines.get(currentLine));
-                        scores.add(score);
-                    } catch (NumberFormatException e) {
-                        studentHasError = true;
-                    }
+                    hasError = true;
                     currentLine++;
                 }
 
-                StudentRecord student = new StudentRecord(studentName, scores, studentHasError);
-                students.add(student);
+                students.add(new StudentRecord(studentName, scores, hasError));
             }
+
             return students;
 
-        } catch (NumberFormatException e) {
-            throw new BadDataException("First line is not an integer");
+        } catch (IndexOutOfBoundsException e) {
+            throw new BadDataException("Unexpected end of file");
         }
     }
 }
